@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+public/
+content/**/*.png
+content/**/*.jpeg
+content/**/*.jpg
+content/**/*.webp
+.DS_Store
+/*.exe
