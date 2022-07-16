@@ -21,16 +21,18 @@ const WAIFU2X_BIN_PATH = path.join(
   "./scripts/static/waifu2x/waifu2x-ncnn-vulkan.exe"
 );
 const ENLARGED_FILE_PREFIX = "hentie2110";
+const WAIFU2X_SUFFIX = "waifu2x";
 const IDEAL_PAGE_WIDTH = 2048;
 const IDEAL_HEIGHT = 2732;
 const IDEAL_THUMBNAIL_WIDTH = 600;
 
 async function compressFile(filePath, maximumWidth) {
   const fileExtension = getFileExtension(filePath);
+  const fileName = path.basename(filePath);
   const newFilePath = filePath.replace(fileExtension, "webp");
   const { width, height } = sizeOf(filePath);
   const encoder = new CWebp(filePath);
-  if (width > maximumWidth) {
+  if (width > maximumWidth && fileName.includes(WAIFU2X_SUFFIX)) {
     encoder.resize(maximumWidth, 0);
   }
   encoder.quality(100);
@@ -49,7 +51,7 @@ async function enlargeFile(filePath, index) {
     const absoluteTargetFilePath = path.resolve(
       process.cwd(),
       fileDirectory,
-      `${targetFileName}.png`
+      `${targetFileName}_${WAIFU2X_SUFFIX}.png`
     );
     const absoluteFilePath = path.resolve(process.cwd(), filePath);
     const scale = width < IDEAL_PAGE_WIDTH / 2 ? 4 : 2;
