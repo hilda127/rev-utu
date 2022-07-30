@@ -4,7 +4,6 @@ const path = require("path");
 const { pipeline } = require("stream/promises");
 const crypto = require("crypto");
 const sizeOf = require("image-size");
-const CWebp = require("cwebp").CWebp;
 
 const {
   searchFiles,
@@ -15,6 +14,7 @@ const {
 const { naturalCompare, padNumber, reverse } = require("./utils/string");
 const { KEY_HEX, IV_HEX } = require("../config");
 
+const COMPRESSED_FILE_PREFIX = "compressed";
 const KEY = Buffer.from(KEY_HEX, "hex");
 const IV = Buffer.from(IV_HEX, "hex");
 
@@ -28,10 +28,13 @@ async function encryptTitle(titleDirPath) {
   filePaths.sort(naturalCompare);
 
   const thumbnailPaths = filePaths.filter((filePath) =>
-    filePath.startsWith(`${titleDirPath}/thumbnail`)
+    filePath.startsWith(`${titleDirPath}/${COMPRESSED_FILE_PREFIX}_thumbnail`)
   );
   filePaths = filePaths.filter(
-    (filePath) => !filePath.startsWith(`${titleDirPath}/thumbnail`)
+    (filePath) =>
+      !filePath.startsWith(
+        `${titleDirPath}/${COMPRESSED_FILE_PREFIX}_thumbnail`
+      )
   );
 
   // Folder is empty without images
@@ -69,9 +72,6 @@ async function encryptTitle(titleDirPath) {
   const dimensionsList = [];
   for (let i = 0; i < filePaths.length; i++) {
     const filePath = filePaths[i];
-    if (filePath.endsWith("thumbnail.webp")) {
-      continue;
-    }
     const { width, height } = sizeOf(filePath);
     const cipher = crypto.createCipheriv("aes-256-cbc", KEY, IV);
     const input = fs.createReadStream(filePath);
