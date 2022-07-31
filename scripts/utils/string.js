@@ -21,7 +21,7 @@ function decrypt(str) {
   return str;
 }
 
-function escapeFilePathPattern(filePath) {
+function escapeFilePathForPattern(filePath) {
   const arr = [];
   for (const c of filePath) {
     if (c === "[") {
@@ -41,5 +41,5 @@ module.exports = {
   reverse,
   padNumber,
   decrypt,
-  escapeFilePathPattern,
+  escapeFilePathForPattern,
 };

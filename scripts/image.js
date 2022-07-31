@@ -15,7 +15,7 @@ const {
 const {
   naturalCompare,
   padNumber,
-  escapeFilePathPattern,
+  escapeFilePathForPattern,
 } = require("./utils/string");
 const { pLimit } = require("./utils/pool");
 
@@ -120,9 +120,10 @@ async function enlargeFile(filePath, index) {
 }
 
 async function processTitle(titleDirPath) {
+  const titleDirPattern = escapeFilePathForPattern(titleDirPath);
   const titleName = path.basename(titleDirPath);
   console.log(`Processing title '${titleName}'...`);
-  let filePaths = await searchFiles(`${titleDirPath}/*.{png,jpg,jpeg}`);
+  let filePaths = await searchFiles(`${titleDirPattern}/*.{png,jpg,jpeg}`);
 
   // Sort file paths in natural order
   filePaths.sort(naturalCompare);
@@ -170,7 +171,7 @@ async function processTitle(titleDirPath) {
   }
 
   const enlargedFilePaths = await searchFiles(
-    `${titleDirPath}/${ENLARGED_FILE_PREFIX}_*.{png,jpg,jpeg,webp}`
+    `${titleDirPattern}/${ENLARGED_FILE_PREFIX}_*.{png,jpg,jpeg,webp}`
   );
 
   if (enlargeError != null) {
@@ -211,7 +212,7 @@ async function processTitle(titleDirPath) {
   }
 
   const compressedFilePaths = await searchFiles(
-    `${titleDirPath}/${COMPRESSED_FILE_PREFIX}_*`
+    `${titleDirPattern}/${COMPRESSED_FILE_PREFIX}_*`
   );
 
   if (compressError != null) {
@@ -239,6 +240,6 @@ async function processTitle(titleDirPath) {
   const directories = await getDirectories("content/");
 
   for (const dir of directories) {
-    await processTitle(escapeFilePathPattern(`content/${dir}`));
+    await processTitle(`content/${dir}`);
   }
 })();

@@ -15,7 +15,7 @@ const {
   naturalCompare,
   padNumber,
   reverse,
-  escapeFilePathPattern,
+  escapeFilePathForPattern,
 } = require("./utils/string");
 const { KEY_HEX, IV_HEX } = require("../config");
 
@@ -24,10 +24,11 @@ const KEY = Buffer.from(KEY_HEX, "hex");
 const IV = Buffer.from(IV_HEX, "hex");
 
 async function encryptTitle(titleDirPath) {
+  const titleDirPattern = escapeFilePathForPattern(titleDirPath);
   let titleName = path.basename(titleDirPath);
   console.log(`Encrypting title '${titleName}'...`);
 
-  let filePaths = await searchFiles(`${titleDirPath}/*.{png,jpg,jpeg,webp}`);
+  let filePaths = await searchFiles(`${titleDirPattern}/*.{png,jpg,jpeg,webp}`);
 
   // Sort image file paths in natural order
   filePaths.sort(naturalCompare);
@@ -51,7 +52,7 @@ async function encryptTitle(titleDirPath) {
   // Clean up existing encrypted files for title that has been re-processed
   console.log(`Cleaning up old encrypted files under title '${titleName}'...`);
   const trackedFilePaths = await searchFiles(
-    `${titleDirPath}/*.{gnp,gpj,gepj,pbew}`
+    `${titleDirPattern}/*.{gnp,gpj,gepj,pbew}`
   );
   await deleteFiles(trackedFilePaths);
 
@@ -111,6 +112,6 @@ async function encryptTitle(titleDirPath) {
   const directories = await getDirectories("content/");
 
   for (const dir of directories) {
-    await encryptTitle(escapeFilePathPattern(`content/${dir}`));
+    await encryptTitle(`content/${dir}`);
   }
 })();
