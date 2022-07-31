@@ -12,7 +12,11 @@ const {
   deleteFiles,
   getFileSize,
 } = require("./utils/file");
-const { naturalCompare, padNumber } = require("./utils/string");
+const {
+  naturalCompare,
+  padNumber,
+  escapeFilePathPattern,
+} = require("./utils/string");
 const { pLimit } = require("./utils/pool");
 
 const ENLARGE_WORKERS_COUNT = 2;
@@ -118,7 +122,6 @@ async function enlargeFile(filePath, index) {
 async function processTitle(titleDirPath) {
   const titleName = path.basename(titleDirPath);
   console.log(`Processing title '${titleName}'...`);
-
   let filePaths = await searchFiles(`${titleDirPath}/*.{png,jpg,jpeg}`);
 
   // Sort file paths in natural order
@@ -236,6 +239,6 @@ async function processTitle(titleDirPath) {
   const directories = await getDirectories("content/");
 
   for (const dir of directories) {
-    await processTitle(`content/${dir}`);
+    await processTitle(escapeFilePathPattern(`content/${dir}`));
   }
 })();

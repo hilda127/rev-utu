@@ -21,9 +21,18 @@ function decrypt(str) {
   return str;
 }
 
+function escapeFilePathPattern(filePath) {
+  return filePath
+    .replaceAll("[", "\\[")
+    .replaceAll("]", "\\]")
+    .replaceAll("{", "\\{")
+    .replaceAll("}", "\\}");
+}
+
 module.exports = {
   naturalCompare,
   reverse,
   padNumber,
   decrypt,
+  escapeFilePathPattern,
 };

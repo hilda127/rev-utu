@@ -11,7 +11,12 @@ const {
   getFileExtension,
   deleteFiles,
 } = require("./utils/file");
-const { naturalCompare, padNumber, reverse } = require("./utils/string");
+const {
+  naturalCompare,
+  padNumber,
+  reverse,
+  escapeFilePathPattern,
+} = require("./utils/string");
 const { KEY_HEX, IV_HEX } = require("../config");
 
 const COMPRESSED_FILE_PREFIX = "compressed";
@@ -106,6 +111,6 @@ async function encryptTitle(titleDirPath) {
   const directories = await getDirectories("content/");
 
   for (const dir of directories) {
-    await encryptTitle(`content/${dir}`);
+    await encryptTitle(escapeFilePathPattern(`content/${dir}`));
   }
 })();
