@@ -22,11 +22,18 @@ function decrypt(str) {
 }
 
 function escapeFilePathPattern(filePath) {
-  return filePath
-    .replaceAll("[", "\\[")
-    .replaceAll("]", "\\]")
-    .replaceAll("{", "\\{")
-    .replaceAll("}", "\\}");
+  const arr = [];
+  for (const c of filePath) {
+    if (c === "[") {
+      arr.push("[[]");
+    } else if (c === "]") {
+      arr.push("[]]");
+    } else {
+      arr.push(c);
+    }
+  }
+
+  return arr.join("");
 }
 
 module.exports = {
